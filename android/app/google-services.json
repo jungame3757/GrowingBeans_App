@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "594367967534",
+    "project_id": "growing-beans-edu-tjwns",
+    "storage_bucket": "growing-beans-edu-tjwns.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:594367967534:android:5978234e62cc2cfe794abf",
+        "android_client_info": {
+          "package_name": "com.growingbeans.growing_beans"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFcRO1H74qB5T2nivekdnfAIJ2mJETh90"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
