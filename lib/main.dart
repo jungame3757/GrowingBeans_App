@@ -87,28 +87,31 @@ class MainMenuScreen extends StatelessWidget {
               const SizedBox(height: 48),
               _MenuButton(
                 label: '퀴즈 풀기',
-                icon: Icons.quiz_rounded,
+                icon: Icons.lightbulb_rounded,
                 color: AppTheme.secondaryColor,
                 onPressed: () => _navigateToLesson(context, 'Basic Quiz', Question.mockQuiz()),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               _MenuButton(
-                label: '단어조합 하기',
-                icon: Icons.abc_rounded,
-                color: AppTheme.primaryColor,
+                label: '단어조합',
+                icon: Icons.extension_rounded,
+                color: AppTheme.successColor,
                 onPressed: () => _navigateToLesson(context, 'Word Scramble', Question.mockScramble()),
               ),
-              const SizedBox(height: 16),
-              OutlinedButton(
+              const SizedBox(height: 32),
+              TextButton.icon(
                 onPressed: () {
                   // Navigate to profile/items
                 },
-                style: OutlinedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                icon: const Icon(Icons.shopping_bag_rounded),
+                label: const Text('내 가방 보기'),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.brown[600],
+                  textStyle: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                child: const Text('내 가방 보기'),
               ),
             ],
           ),
@@ -133,26 +136,46 @@ class _MenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 200,
-      height: 60,
-      child: ElevatedButton.icon(
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(maxWidth: 300),
+      height: 90, // 버튼 높이 대폭 확대
+      child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
+          foregroundColor: Colors.white,
+          elevation: 8,
+          shadowColor: color.withOpacity(0.4),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(24),
           ),
+          padding: EdgeInsets.zero,
         ),
-        icon: Icon(icon, color: Colors.white),
-        label: Text(
-          label,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, size: 36, color: Colors.white),
+            ),
+            const SizedBox(width: 20),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
+

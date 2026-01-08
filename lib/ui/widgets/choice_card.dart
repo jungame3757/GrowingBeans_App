@@ -28,8 +28,8 @@ class ChoiceCard extends StatelessWidget {
 
     if (isCorrect != null && isSelected) {
       if (isCorrect!) {
-        borderColor = AppTheme.greenColor;
-        backgroundColor = AppTheme.greenColor.withOpacity(0.1);
+        borderColor = AppTheme.successColor;
+        backgroundColor = AppTheme.successColor.withOpacity(0.1);
       } else {
         borderColor = AppTheme.errorColor;
         backgroundColor = AppTheme.errorColor.withOpacity(0.1);
@@ -38,31 +38,40 @@ class ChoiceCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: borderColor, width: 3),
-          boxShadow: isSelected
-              ? []
-              : [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    offset: const Offset(0, 4),
-                    blurRadius: 0,
-                  ),
-                ],
-        ),
-        child: Center(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: textColor,
+      child: AnimatedScale(
+        scale: isSelected ? 0.96 : 1.0,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeOutBack,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+          margin: const EdgeInsets.symmetric(vertical: 12),
+          constraints: const BoxConstraints(minHeight: 84),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 28),
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(
+              color: borderColor, 
+              width: isSelected ? 4 : 2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: borderColor.withOpacity(0.3),
+                offset: isSelected ? const Offset(0, 2) : const Offset(0, 8),
+                blurRadius: isSelected ? 2 : 0,
+              ),
+            ],
+          ),
+          child: Center(
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                color: textColor,
+              ),
             ),
           ),
         ),
