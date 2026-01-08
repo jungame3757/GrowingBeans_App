@@ -4,6 +4,8 @@ import '../../logic/lesson_provider.dart';
 import '../../core/app_theme.dart';
 import '../widgets/top_progress_bar.dart';
 import '../widgets/choice_card.dart';
+import '../widgets/word_scramble_view.dart';
+import '../../data/models/question_model.dart';
 
 class LessonScreen extends StatelessWidget {
   const LessonScreen({super.key});
@@ -35,40 +37,53 @@ class LessonScreen extends StatelessWidget {
 
             // Question Content
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 32),
-                    Text(
-                      'Match the word:',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: Colors.grey[600],
-                            letterSpacing: 1.2,
-                          ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      question.text,
-                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                            color: Colors.brown[800],
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                    const SizedBox(height: 40),
-                    // Choices
-                    ...question.options.asMap().entries.map((entry) {
-                      int idx = entry.key;
-                      String val = entry.value;
-                      return ChoiceCard(
-                        text: val,
-                        isSelected: provider.selectedOptionIndex == idx,
-                        isCorrect: provider.isCorrect,
-                        onTap: () => provider.selectOption(idx),
-                      );
-                    }).toList(),
-                  ],
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 20),
+                      Text(
+                        'Match the word:',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: Colors.grey[600],
+                              letterSpacing: 1.2,
+                            ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        question.text,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                              color: Colors.brown[800],
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      const SizedBox(height: 20),
+                      // Choices or Scramble View
+                      if (question.type == QuestionType.wordScramble)
+                        WordScrambleView(
+                          userLetters: provider.userLetters,
+                          scrambleLetters: question.scrambleLetters ?? [],
+                          usedLetterIndices: provider.usedLetterIndices,
+                          targetLength: question.correctWord?.length ?? 0,
+                          onAddLetter: (idx) => provider.addLetter(idx),
+                          onRemoveLetter: (idx) => provider.removeLetter(idx),
+                        )
+                      else
+                        ...question.options.asMap().entries.map((entry) {
+                          int idx = entry.key;
+                          String val = entry.value;
+                          return ChoiceCard(
+                            text: val,
+                            isSelected: provider.selectedOptionIndex == idx,
+                            isCorrect: provider.isCorrect,
+                            onTap: () => provider.selectOption(idx),
+                          );
+                        }).toList(),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -85,7 +100,15 @@ class LessonScreen extends StatelessWidget {
     bool isAnswerChecked = provider.isCorrect != null;
     Color barColor = Colors.white;
     String buttonText = "CHECK";
-    VoidCallback? onPressed = provider.selectedOptionIndex == null ? null : provider.checkAnswer;
+    
+    bool canCheck = false;
+    if (provider.currentQuestion.type == QuestionType.wordScramble) {
+      canCheck = provider.userLetters.isNotEmpty;
+    } else {
+      canCheck = provider.selectedOptionIndex != null;
+    }
+
+    VoidCallback? onPressed = !canCheck ? null : provider.checkAnswer;
 
     if (isAnswerChecked) {
       barColor = provider.isCorrect! ? AppTheme.greenColor.withOpacity(0.2) : AppTheme.errorColor.withOpacity(0.2);
@@ -131,7 +154,7 @@ class LessonScreen extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: isAnswerChecked
                     ? (provider.isCorrect! ? AppTheme.greenColor : AppTheme.errorColor)
-                    : provider.selectedOptionIndex == null ? Colors.grey[300] : AppTheme.secondaryColor,
+                    : (!canCheck) ? Colors.grey[300] : AppTheme.secondaryColor,
                 elevation: 0,
               ),
               child: Text(buttonText),
