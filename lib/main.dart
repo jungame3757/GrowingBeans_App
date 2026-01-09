@@ -7,6 +7,9 @@ import 'logic/lesson_provider.dart';
 import 'data/models/lesson_model.dart';
 import 'data/models/question_model.dart';
 import 'ui/screens/lesson_screen.dart';
+import 'logic/script_parser.dart';
+import 'data/repositories/script_repository.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -104,6 +107,30 @@ class MainMenuScreen extends StatelessWidget {
                 icon: Icons.text_fields_rounded,
                 color: Colors.indigo,
                 onPressed: () => _navigateToLesson(context, 'Sentence Builder', Question.mockSentenceScramble()),
+              ),
+              const SizedBox(height: 20),
+              FutureBuilder<String>(
+                future: ScriptRepository().loadScript('assets/scripts/lesson_01.txt'),
+                builder: (context, snapshot) {
+                  return _MenuButton(
+                    label: '대본 학습',
+                    icon: Icons.auto_stories_rounded,
+                    color: Colors.pinkAccent,
+                    onPressed: () {
+                      if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                        _navigateToLesson(
+                          context, 
+                          'Script Lesson', 
+                          ScriptParser.parseScript(snapshot.data!),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('로딩 중이거나 데이터를 불러올 수 없습니다.')),
+                        );
+                      }
+                    },
+                  );
+                }
               ),
               const SizedBox(height: 32),
               TextButton.icon(

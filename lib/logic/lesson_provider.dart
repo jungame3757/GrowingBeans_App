@@ -24,7 +24,14 @@ class LessonProvider extends ChangeNotifier {
   // Getters
   int get currentQuestionIndex => _currentQuestionIndex;
   Question get currentQuestion => lesson.questions[_currentQuestionIndex];
-  double get progress => lesson.getProgress(_currentQuestionIndex);
+  double get progress {
+    if (lesson.questions.isEmpty) return 0.0;
+    int completedCount = _currentQuestionIndex;
+    if (_isCorrect == true) {
+      completedCount++;
+    }
+    return completedCount / lesson.questions.length;
+  }
   bool get isLessonComplete => _isLessonComplete;
   int? get selectedOptionIndex => _selectedOptionIndex;
   bool? get isCorrect => _isCorrect;
@@ -117,7 +124,7 @@ class LessonProvider extends ChangeNotifier {
 
     // 정답 확인 후 3초 뒤 자동 다음 문제 이동
     _autoNextTimer?.cancel();
-    _autoNextTimer = Timer(const Duration(seconds: 3), () {
+    _autoNextTimer = Timer(const Duration(milliseconds: 1500), () {
       nextQuestion();
     });
   }
