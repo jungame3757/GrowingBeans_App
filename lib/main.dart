@@ -98,6 +98,13 @@ class MainMenuScreen extends StatelessWidget {
                 color: AppTheme.successColor,
                 onPressed: () => _navigateToLesson(context, 'Word Scramble', Question.mockScramble()),
               ),
+              const SizedBox(height: 20),
+              _MenuButton(
+                label: '문장 연습',
+                icon: Icons.text_fields_rounded,
+                color: Colors.indigo,
+                onPressed: () => _navigateToLesson(context, 'Sentence Builder', Question.mockSentenceScramble()),
+              ),
               const SizedBox(height: 32),
               TextButton.icon(
                 onPressed: () {

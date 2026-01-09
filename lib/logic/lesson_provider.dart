@@ -14,6 +14,10 @@ class LessonProvider extends ChangeNotifier {
   // Word Scramble State
   List<String> _userLetters = [];
   List<int> _usedLetterIndices = []; // Track indices of scrambleLetters used
+  
+  // Sentence Scramble State
+  List<String> _userWords = [];
+  List<int> _usedWordIndices = [];
 
   LessonProvider({required this.lesson});
 
@@ -26,6 +30,8 @@ class LessonProvider extends ChangeNotifier {
   bool? get isCorrect => _isCorrect;
   List<String> get userLetters => _userLetters;
   List<int> get usedLetterIndices => _usedLetterIndices;
+  List<String> get userWords => _userWords;
+  List<int> get usedWordIndices => _usedWordIndices;
 
   // Actions
   void selectOption(int index) {
@@ -62,10 +68,46 @@ class LessonProvider extends ChangeNotifier {
     }
   }
 
+  void addWord(int index) {
+    if (_isCorrect != null || currentQuestion.type != QuestionType.sentenceScramble) return;
+    if (_usedWordIndices.contains(index)) return;
+
+    final words = currentQuestion.scrambleWords;
+    if (words != null && index < words.length) {
+      _userWords.add(words[index]);
+      _usedWordIndices.add(index);
+      notifyListeners();
+
+      // Check if sentence is complete (based on length of correct sentence tokens or just number of words)
+      // Comparing length of user words vs scramble words is one way, 
+      // but correct sentence might use specific count. 
+      // Safest is to check against scrambleWords length if we use all words.
+      if (_userWords.length == words.length) {
+        checkAnswer();
+      }
+    }
+  }
+
+  void removeWord(int userWordIndex) {
+    if (_isCorrect != null || currentQuestion.type != QuestionType.sentenceScramble) return;
+
+    if (userWordIndex < _userWords.length) {
+      _userWords.removeAt(userWordIndex);
+      _usedWordIndices.removeAt(userWordIndex);
+      notifyListeners();
+    }
+  }
+
   void checkAnswer() {
     if (currentQuestion.type == QuestionType.wordScramble) {
       final inputWord = _userLetters.join('');
       _isCorrect = (inputWord == currentQuestion.correctWord);
+    } else if (currentQuestion.type == QuestionType.sentenceScramble) {
+      final inputSentence = _userWords.join(' ');
+      // Compare with correctSentence (assuming spaces are consistent)
+      // Or we could compare with the scrambleWords if we knew the correct order indices, 
+      // but string comparison is easiest.
+      _isCorrect = (inputSentence == currentQuestion.correctSentence);
     } else {
       if (_selectedOptionIndex == null) return;
       _isCorrect = (_selectedOptionIndex == currentQuestion.correctAnswerIndex);
@@ -100,6 +142,8 @@ class LessonProvider extends ChangeNotifier {
     _isCorrect = null;
     _userLetters = [];
     _usedLetterIndices = [];
+    _userWords = [];
+    _usedWordIndices = [];
   }
 
   @override

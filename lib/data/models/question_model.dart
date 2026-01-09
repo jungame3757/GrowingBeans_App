@@ -3,6 +3,7 @@ enum QuestionType {
   trueFalse,
   imageMatch,
   wordScramble,
+  sentenceScramble, // New type
 }
 
 class Question {
@@ -15,6 +16,10 @@ class Question {
   final String? audioUrl;
   final String? correctWord;
   final List<String>? scrambleLetters;
+  
+  // For Sentence Scramble
+  final String? correctSentence;
+  final List<String>? scrambleWords;
 
   Question({
     required this.id,
@@ -26,6 +31,8 @@ class Question {
     this.audioUrl,
     this.correctWord,
     this.scrambleLetters,
+    this.correctSentence,
+    this.scrambleWords,
   });
 
   // Specific mock for Multiple Choice
@@ -84,6 +91,30 @@ class Question {
         correctAnswerIndex: -1,
         correctWord: "BANANA",
         scrambleLetters: ["N", "A", "B", "A", "N", "A"],
+      ),
+    ];
+  }
+
+  // Specific mock for Sentence Scramble
+  static List<Question> mockSentenceScramble() {
+    return [
+      Question(
+        id: "ss_1",
+        text: "Form the sentence:",
+        type: QuestionType.sentenceScramble,
+        options: [],
+        correctAnswerIndex: -1,
+        correctSentence: "I like apples",
+        scrambleWords: ["like", "I", "apples"],
+      ),
+      Question(
+        id: "ss_2",
+        text: "Form the sentence:",
+        type: QuestionType.sentenceScramble,
+        options: [],
+        correctAnswerIndex: -1,
+        correctSentence: "The sky is blue",
+        scrambleWords: ["is", "blue", "The", "sky"],
       ),
     ];
   }

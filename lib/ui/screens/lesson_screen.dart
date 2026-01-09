@@ -6,6 +6,7 @@ import '../../core/app_theme.dart';
 import '../widgets/top_progress_bar.dart';
 import '../widgets/choice_card.dart';
 import '../widgets/word_scramble_view.dart';
+import '../widgets/sentence_scramble_view.dart';
 import '../../data/models/question_model.dart';
 
 class LessonScreen extends StatefulWidget {
@@ -171,6 +172,16 @@ class _LessonScreenState extends State<LessonScreen> {
         targetLength: question.correctWord?.length ?? 0,
         onAddLetter: (idx) => provider.addLetter(idx),
         onRemoveLetter: (idx) => provider.removeLetter(idx),
+      );
+    } else if (question.type == QuestionType.sentenceScramble) {
+      return SentenceScrambleView(
+        key: ValueKey('sentence_${question.id}'),
+        userWords: provider.userWords,
+        scrambleWords: question.scrambleWords ?? [],
+        correctSentence: question.correctSentence ?? "", // Pass real data
+        usedWordIndices: provider.usedWordIndices,
+        onAddWord: (idx) => provider.addWord(idx),
+        onRemoveWord: (idx) => provider.removeWord(idx),
       );
     } else {
       return Column(
