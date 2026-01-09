@@ -7,6 +7,7 @@ import 'logic/lesson_provider.dart';
 import 'data/models/lesson_model.dart';
 import 'data/models/question_model.dart';
 import 'ui/screens/lesson_screen.dart';
+import 'ui/screens/video_player_screen.dart';
 import 'logic/script_parser.dart';
 import 'data/repositories/script_repository.dart';
 
@@ -107,6 +108,22 @@ class MainMenuScreen extends StatelessWidget {
                 icon: Icons.text_fields_rounded,
                 color: Colors.indigo,
                 onPressed: () => _navigateToLesson(context, 'Sentence Builder', Question.mockSentenceScramble()),
+              ),
+              const SizedBox(height: 20),
+              _MenuButton(
+                label: '동영상 학습',
+                icon: Icons.ondemand_video_rounded,
+                color: Colors.orange,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const VideoPlayerScreen(
+                        vimeoId: '1103803270',
+                      ),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 20),
               FutureBuilder<String>(
